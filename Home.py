@@ -1,4 +1,3 @@
-
 import sys, os
 sys.path.insert(0, os.path.dirname(__file__))
 
@@ -80,6 +79,14 @@ def onboarding():
 
     # ── Step 3: Animal Avatar ─────────────────────────────
     elif step == 3:
+        # FIX: On first arrival at step 3, Streamlit hasn't fully resolved
+        # column widths before painting emoji markdown, causing the emoji div
+        # to be clipped (overflow hidden) until a rerun stabilises the layout.
+        # We trigger exactly one silent rerun the first time this step loads.
+        if not st.session_state.get("_avatar_step_ready", False):
+            st.session_state["_avatar_step_ready"] = True
+            st.rerun()
+
         st.markdown("""
 <div style="text-align:center;padding:8px 0 16px;">
     <div style="font-size:22px;font-weight:900;margin-bottom:6px;">Pick your animal companion!</div>
@@ -114,6 +121,7 @@ def onboarding():
         if st.session_state.avatar:
             if st.button("Continue →", use_container_width=True):
                 st.session_state.onboard_step = 4
+                st.session_state["_avatar_step_ready"] = False  # reset for next visit
                 st.rerun()
         else:
             st.markdown('<p style="text-align:center;color:#4a6572;font-size:13px;font-weight:600;">Choose a companion above ↑</p>', unsafe_allow_html=True)
