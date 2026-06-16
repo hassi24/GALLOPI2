@@ -79,6 +79,7 @@ def onboarding():
                 st.warning("Give yourself a name first! 😄")
 
     # ── Step 3: Animal Avatar ─────────────────────────────
+    # ── Step 3: Animal Avatar ─────────────────────────────
     elif step == 3:
         st.markdown("""
 <div style="text-align:center;padding:8px 0 16px;">
@@ -86,6 +87,11 @@ def onboarding():
     <div style="font-size:13px;color:#4a6572;font-weight:600;">Your spirit guide for the journey 🌟</div>
 </div>
 """, unsafe_allow_html=True)
+
+    # Default selected avatar
+    if not st.session_state.avatar:
+        st.session_state.avatar = "🦄"
+        st.session_state.avatar_label = "Unicorn"
 
         cols = st.columns(3)
         for i, (emoji, label, tagline) in enumerate(ANIMAL_AVATARS):
