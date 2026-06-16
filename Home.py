@@ -79,7 +79,6 @@ def onboarding():
                 st.warning("Give yourself a name first! 😄")
 
     # ── Step 3: Animal Avatar ─────────────────────────────
-    # ── Step 3: Animal Avatar ─────────────────────────────
     elif step == 3:
         st.markdown("""
 <div style="text-align:center;padding:8px 0 16px;">
@@ -88,30 +87,42 @@ def onboarding():
 </div>
 """, unsafe_allow_html=True)
 
-    # Default selected avatar
-    if not st.session_state.avatar:
-        st.session_state.avatar = "🦄"
-        st.session_state.avatar_label = "Unicorn"
-
         cols = st.columns(3)
         for i, (emoji, label, tagline) in enumerate(ANIMAL_AVATARS):
             with cols[i % 3]:
                 is_sel = st.session_state.avatar == emoji
                 border_col = "#58cc02" if is_sel else "#203038"
-                bg_col     = "#0f2a0f" if is_sel else "#131f24"
-                shadow     = "box-shadow:0 4px 0 #46a302;" if is_sel else ""
-                checkmark  = '<div style="position:absolute;top:4px;right:4px;background:#58cc02;color:#fff;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;">✓</div>' if is_sel else ""
+                bg_col = "#0f2a0f" if is_sel else "#131f24"
+                border_width = "4px" if is_sel else "2px"
 
-                st.markdown(f"""
-<div style="background:{bg_col};border:2.5px solid {border_col};border-radius:18px;
-            padding:14px 8px;text-align:center;margin-bottom:8px;position:relative;{shadow}">
-    {checkmark}
+        selected_text = "✅ SELECTED" if is_sel else ""
+
+        st.markdown(f"""
+<div style="
+    background:{bg_col};
+    border:{border_width} solid {border_col};
+    border-radius:18px;
+    padding:14px 8px;
+    text-align:center;
+    margin-bottom:8px;
+">
     <div style="font-size:40px;margin-bottom:6px;">{emoji}</div>
     <div style="font-size:12px;font-weight:800;color:#e8f4f8;">{label}</div>
     <div style="font-size:10px;color:#4a6572;margin-top:2px;">{tagline}</div>
+    <div style="color:#58cc02;font-size:10px;font-weight:900;">
+        {selected_text}
+    </div>
 </div>
 """, unsafe_allow_html=True)
-                if st.button(f"Pick {emoji}", key=f"av_{i}", use_container_width=True):
+
+        if st.button(f"Pick {emoji}", key=f"av_{i}", use_container_width=True):
+            st.session_state.avatar = emoji
+            st.session_state.avatar_label = label
+            st.rerun()
+            st.markdown(f"## {emoji}")
+            st.markdown(f"**{label}**")
+            st.caption(tagline)
+            if st.button(f"Pick {emoji}", key=f"av_{i}", use_container_width=True):
                     st.session_state.avatar = emoji
                     st.session_state.avatar_label = label
                     st.rerun()
